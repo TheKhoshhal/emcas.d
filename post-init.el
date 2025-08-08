@@ -1,8 +1,37 @@
 (mapc #'disable-theme custom-enabled-themes)  ; Disable all active themes
 (load-theme 'gruber-darker t)  ; Load the built-in theme
 
-; prefered split direction
+;; enable which-key
+(which-key-mode)
+
+;; open compilation mode in split window
+(add-to-list 'display-buffer-alist
+             '("\\*compilation\\*" (display-buffer-at-bottom . ((window-height . 0.3)))))
+
+;; preferred split direction
 (setq split-window-preferred-function #'split-window-right)
+
+;; Copy stuff
+(global-set-key (kbd "C-c w") (quote copy-word))
+(global-set-key (kbd "C-c l") (quote copy-line))
+(global-set-key (kbd "C-c p") (quote copy-paragraph))
+(global-set-key (kbd "C-c s") (quote thing-copy-string-to-mark))
+(global-set-key (kbd "C-c a") (quote thing-copy-parenthesis-to-mark))
+
+;; Compiling things, navigating to errors
+(global-set-key (kbd "C-c C-r") 'recompile)
+(global-set-key (kbd "C-c C-c") 'compile)
+(global-set-key (kbd "M-p") 'previous-error)
+(global-set-key (kbd "M-n") 'next-error)
+(global-set-key (kbd "s-p") 'flymake-goto-prev-error)
+(global-set-key (kbd "s-n") 'flymake-goto-next-error)
+
+;; Open URLs in Firefox.
+(global-set-key (kbd "s-t") 'browse-url-firefox)
+
+
+;; auto pair
+(electric-pair-mode)
 
 ;; Give Emacs tab-bar a style similar to Vim's
 (use-package vim-tab-bar
@@ -324,7 +353,7 @@
              eglot-rename
              eglot-format-buffer))
 
-
+(add-hook 'prog-mode-hook 'eglot-ensure)
 
 ;; Org mode is a major mode designed for organizing notes, planning, task
 ;; management, and authoring documents using plain text with a simple and
@@ -363,11 +392,29 @@
   (:map markdown-mode-map
         ("C-c C-e" . markdown-do)))
 
+;; emacs projectile
+(use-package projectile
+  :ensure t
+  :init
+  (projectile-mode +1)
+  :bind (:map projectile-mode-map
+              ("s-p" . projectile-command-map)
+              ("C-c p" . projectile-command-map)))
+
 ;; dashboard for emacs
 (use-package dashboard
   :ensure t
   :config
   (dashboard-setup-startup-hook))
+
+;; (setq dashboard-startup-banner 'logo)
+(setq dashboard-startup-banner 2)
+
+(setq dashboard-projects-backend 'projectile)
+
+(setq dashboard-items '((recents   . 5)
+                        (bookmarks . 5)
+                        (projects  . 5)))
 
 ;; Tree-sitter in Emacs is an incremental parsing system introduced in Emacs 29
 ;; that provides precise, high-performance syntax highlighting. It supports a
@@ -382,6 +429,7 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
+;; spell check
 (use-package ispell
   :ensure nil
   :commands (ispell ispell-minor-mode)
