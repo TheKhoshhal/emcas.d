@@ -33,6 +33,11 @@
 ;; auto pair
 (electric-pair-mode)
 
+;; emacs doom mode line
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
 ;; Give Emacs tab-bar a style similar to Vim's
 (use-package vim-tab-bar
   :ensure t
