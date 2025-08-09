@@ -1,8 +1,16 @@
 (mapc #'disable-theme custom-enabled-themes)  ; Disable all active themes
-(load-theme 'gruber-darker t)  ; Load the built-in theme
+;;(load-theme 'gruber-darker t)  ; Load the built-in theme
+
+(use-package gruber-darker-theme
+  :ensure t
+  :config
+  (load-theme 'gruber-darker t))
 
 ;; enable which-key
-(which-key-mode)
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
 
 ;; open compilation mode in split window
 (add-to-list 'display-buffer-alist
@@ -29,6 +37,9 @@
 ;; Open URLs in Firefox.
 (global-set-key (kbd "s-t") 'browse-url-firefox)
 
+;; undo, redo
+(global-set-key (kbd "C-z") 'undo-fu-only-undo)
+(global-set-key (kbd "C-S-z") 'undo-fu-only-redo)
 
 ;; auto pair
 (electric-pair-mode)
@@ -130,10 +141,15 @@
   ;; Disable Ispell completion function. As an alternative try `cape-dict'.
   (text-mode-ispell-word-completion nil)
   (tab-always-indent 'complete)
+  (corfu-popupinfo-delay 0.5)
+
+  :init
+  (global-corfu-mode)
 
   ;; Enable Corfu
   :config
-  (global-corfu-mode))
+  (require 'corfu-popupinfo)
+  (corfu-popupinfo-mode t))
 
 ;; Cape, or Completion At Point Extensions, extends the capabilities of
 ;; in-buffer completion. It integrates with Corfu or the default completion UI,
